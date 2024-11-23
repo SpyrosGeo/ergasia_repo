@@ -1,0 +1,5 @@
+com\citizenRegistryExample\citizenRegistryDemo\CitizenRegistryDemoApplication.class
+com\citizenRegistryExample\citizenRegistryDemo\controller\CitizenController.class
+com\citizenRegistryExample\citizenRegistryDemo\model\Citizen.class
+com\citizenRegistryExample\citizenRegistryDemo\service\CitizenService.class
+com\citizenRegistryExample\citizenRegistryDemo\repository\CitizenRepository.class
