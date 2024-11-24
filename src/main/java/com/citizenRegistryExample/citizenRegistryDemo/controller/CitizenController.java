@@ -3,6 +3,7 @@ package com.citizenRegistryExample.citizenRegistryDemo.controller;
 import com.citizenRegistryExample.citizenRegistryDemo.CitizenService.CitizenService;
 import com.citizenRegistryExample.citizenRegistryDemo.model.Citizen;
 import com.citizenRegistryExample.citizenRegistryDemo.repository.CitizenRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class CitizenController {
     }
 
    @PostMapping("/addCitizen")
-    public Citizen addCitizen(@RequestBody Citizen newCitizen){
+    public Citizen addCitizen(@Valid @RequestBody Citizen newCitizen){
       return  citizenRepository.save(newCitizen);
    }
 
