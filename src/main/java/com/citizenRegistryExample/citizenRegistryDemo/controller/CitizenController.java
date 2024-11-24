@@ -1,51 +1,72 @@
 package com.citizenRegistryExample.citizenRegistryDemo.controller;
 
+import com.citizenRegistryExample.citizenRegistryDemo.CitizenService.CitizenService;
 import com.citizenRegistryExample.citizenRegistryDemo.model.Citizen;
-import com.citizenRegistryExample.citizenRegistryDemo.service.CitizenService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.citizenRegistryExample.citizenRegistryDemo.repository.CitizenRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 //import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/citizens")
-@Validated
+@RequestMapping("/api")
 public class CitizenController {
+    private final CitizenRepository citizenRepository;
+    private final CitizenService citizenService;
 
-    @Autowired
-    private CitizenService citizenService;
-
-    @PostMapping
-    public ResponseEntity<Citizen> registerCitizen(@Valid @RequestBody Citizen citizen) {
-        return ResponseEntity.ok(citizenService.registerCitizen(citizen));
+    public CitizenController(CitizenRepository citizenRepository, CitizenService citizenService) {
+        this.citizenRepository = citizenRepository;
+        this.citizenService = citizenService;
     }
 
-    @DeleteMapping("/{at}")
-    public ResponseEntity<Void> deleteCitizen(@PathVariable String at) {
-        citizenService.deleteCitizen(at);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/citizens")
+    public List<Citizen> getAllCitizens(){
+        return citizenRepository.findAll();
     }
 
-    @PutMapping("/{at}")
-    public ResponseEntity<Citizen> updateCitizen(
-            @PathVariable String at,
-            @RequestParam(required = false) String socialSecurityNumber,
-            @RequestParam(required = false) String homeAddress) {
-        return ResponseEntity.ok(citizenService.updateCitizen(at, socialSecurityNumber, homeAddress));
+   @PostMapping("/addCitizen")
+    public Citizen addCitizen(@RequestBody Citizen newCitizen){
+      return  citizenRepository.save(newCitizen);
+   }
+
+   @DeleteMapping("/delete/{citizenId}")
+    public ResponseEntity<String> deleteCitizen(@PathVariable("citizenId") String citizenId){ //REsponseEntity returns status codes too;
+    Optional<Citizen> citizen = citizenRepository.findByCitizenId(citizenId);
+        if(citizen.isPresent()){
+            citizenRepository.delete(citizen.get());
+            return ResponseEntity.ok( "Citizen with citizenId "+citizenId+" was successfully deleted");
+
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body( "Citizen with citizenId "+citizenId+" was not found");
+   }
+
+   @GetMapping("/searchCitizen")
+    public List<Citizen> searchCitizen(
+           @RequestParam(required = false) String citizenId,
+           @RequestParam(required = false) String firstName,
+           @RequestParam(required = false) String lastName,
+           @RequestParam(required = false) String gender,
+           @RequestParam(required = false) String dateOfBirth,
+           @RequestParam(required = false) String taxNumber,
+           @RequestParam(required = false) String address){
+            return citizenService.searchCitizen(citizenId,firstName,lastName,gender,dateOfBirth,taxNumber,address);
+   }
+    @PutMapping("/updateCitizen")
+    public ResponseEntity<String> updateCitizen(
+            @RequestParam String citizenId,
+            @RequestParam String taxNumber,
+            @RequestParam String address
+    ) {
+        boolean isUpdated = citizenService.updateCitizen(citizenId, taxNumber, address);
+        if (isUpdated) {
+            return ResponseEntity.ok("Citizen with ID " + citizenId + " was successfully updated.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Citizen with ID " + citizenId + " not found.");
+        }
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Citizen>> searchCitizens(Citizen searchCriteria) {
-        return ResponseEntity.ok(citizenService.searchCitizens(searchCriteria));
-    }
 
-
-    @GetMapping("/{at}")
-    public ResponseEntity<Citizen> getCitizen(@PathVariable String at) {
-        return ResponseEntity.ok(citizenService.getCitizen(at));
-    }
 }
