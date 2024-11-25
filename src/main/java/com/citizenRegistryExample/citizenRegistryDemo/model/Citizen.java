@@ -5,10 +5,13 @@ package com.citizenRegistryExample.citizenRegistryDemo.model;
 
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.NotBlank;
 
 
 import java.time.LocalDate;
@@ -16,80 +19,90 @@ import java.time.LocalDate;
 
 @Entity
 public class Citizen {
-
     @Id
-    @Size(min = 8, max = 8, message = "Identification number (AT) must be 8 characters")
-    private String at;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @NotNull
+    @Size(min = 8, max = 8,message = "Id must be 8 characters in length")
+    private String citizenId ;//AT
+    @NotBlank(message = "First name is required")
+    private String firstName;
+    @NotBlank(message="Last name is required")
+    private String lastName;
+    @Pattern(
+            regexp = "\\d{2}-\\d{2}-\\d{4}",
+            message = "Date of birth must follow the format dd-MM-YYYY."
+    )
+    private String dateOfBirth;
+    private String gender;
+    @Size(min=9,max=9,message="Vat number should be 9 characters in length")
+    private String taxNumber;
+    private String address;
 
-    @NotBlank(message = "Name is required")
-    private String name;
 
-    @NotBlank(message = "Surname is required")
-    private String surname;
+    public Citizen() {
 
-    @NotBlank(message = "Sex is required")
-    private String sex;
 
-    @NotNull(message = "Birth date is required")
-    private LocalDate birthDate;
-
-    private String socialSecurityNumber;
-
-    private String homeAddress;
-
-    public String getAt() {
-        return at;
     }
 
-    public void setAt(String at) {
-        this.at = at;
+    public Citizen(String citizenId, String firstName, String lastName, String dateOfBirth, String gender, String taxNumber, String address) {
+        this.citizenId = citizenId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.taxNumber = taxNumber;
+        this.address = address;
     }
 
-    public String getName() {
-        return name;
+
+    public String getCitizenId() {
+        return citizenId;
+    }
+    public void setCitizenId(String citizenId) {
+        this.citizenId = citizenId;
+    }
+    public String getFirstName() {
+        return firstName;
+    }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    public String getLastName() {
+        return lastName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+    public String getGender() {
+        return gender;
+    }
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+    public String getTaxNumber() {
+        return taxNumber;
+    }
+    public void setTaxNumber(String taxNumber) {
+        this.taxNumber = taxNumber;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public String getSocialSecurityNumber() {
-        return socialSecurityNumber;
-    }
-
-    public void setSocialSecurityNumber(String socialSecurityNumber) {
-        this.socialSecurityNumber = socialSecurityNumber;
-    }
-
-    public String getHomeAddress() {
-        return homeAddress;
-    }
-
-    public void setHomeAddress(String homeAddress) {
-        this.homeAddress = homeAddress;
+    public Long getId() {
+        return id;
     }
 }
