@@ -41,6 +41,7 @@ public class CitizenController {
             return ResponseEntity.ok( "Citizen with citizenId "+citizenId+" was successfully deleted");
 
         }
+        //test5
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body( "Citizen with citizenId "+citizenId+" was not found");
    }
 
